@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">HelloEaseMob</string>
+    <string name="un">用户名</string>
+    <string name="pw">密码</string>
+    <string name="sign_up">注册</string>
+    <string name="sign_in">登陆</string>
+    <string name="confirm_pw">确认密码</string>
+    <string name="confirm">确定</string>
+    <string name="chat">会话</string>
+    <string name="settings">设置</string>
+</resources>

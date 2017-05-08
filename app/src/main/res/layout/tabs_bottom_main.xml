@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <RadioButton
+        android:id="@+id/rb_chat"
+        style="@style/RBMainBottomTabs"
+        android:checked="true"
+        android:drawableTop="@drawable/selector_ic_chat"
+        android:onClick="onChatClick"
+        android:text="@string/chat" />
+
+    <RadioButton
+        android:id="@+id/rb_settings"
+        style="@style/RBMainBottomTabs"
+        android:drawableTop="@drawable/selector_ic_settings"
+        android:onClick="onSettingsClick"
+        android:text="@string/settings" />
+
+</RadioGroup>
