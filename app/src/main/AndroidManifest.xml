@@ -72,8 +72,7 @@
         <activity
             android:name=".controller.sign.SignUpActivity"
             android:screenOrientation="portrait" />
-
-
+        <activity android:name=".controller.chat.activity.ChatActivity"></activity>
     </application>
 
 </manifest>
