@@ -85,14 +85,21 @@ public class SignInActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(int code, String message) {
+                public void onError(final int code, String message) {
                     LogUtils.e("登陆错误码：" + code);
                     progressDialog.dismiss();
-                    if (EMError.INVALID_PASSWORD == code) {
-                        Toast.makeText(SignInActivity.this, "登陆失败，密码不正确！", Toast.LENGTH_SHORT).show();
-                    } else if (EMError.USER_NOT_FOUND == code) {
-                        Toast.makeText(SignInActivity.this, "登陆失败，用户不存在！", Toast.LENGTH_SHORT).show();
-                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (EMError.INVALID_PASSWORD == code) {
+                                Toast.makeText(SignInActivity.this, "登陆失败，密码不正确！", Toast.LENGTH_SHORT).show();
+                            } else if (EMError.USER_AUTHENTICATION_FAILED == code) {
+                                Toast.makeText(SignInActivity.this, "用户名或密码错误！", Toast.LENGTH_SHORT).show();
+                            } else if (EMError.USER_NOT_FOUND == code) {
+                                Toast.makeText(SignInActivity.this, "登陆失败，用户不存在！", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             });
 
