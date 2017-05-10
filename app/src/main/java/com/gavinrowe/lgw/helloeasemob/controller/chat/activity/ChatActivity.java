@@ -41,8 +41,6 @@ public class ChatActivity extends AppCompatActivity {
     private String target;
     // 会话对象
     private EMConversation conversation;
-    // 标志，判断是否已经拉取了所有聊天记录，App完全退出之前有效
-    private static boolean isLoadAllRecord;
 
     private List<EMMessage> mMessages = new ArrayList<>();
     private MessagesAdapter messagesAdapter;
@@ -83,18 +81,23 @@ public class ChatActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (isLoadAllRecord) {
+                // 获取所有显示的消息的数量
+                int size = mMessages.size();
+                // 获取本地存储会话的全部消息数目
+                int localSize = conversation.getAllMsgCount();
+                LogUtils.d("刷新前 本地存储会话的全部聊天记录条数：" + localSize);
+                // 判断信显示消息的数量是否和聊天记录数目相等
+                if (size == localSize) {
                     Toast.makeText(ChatActivity.this, "没有更多数据了", Toast.LENGTH_SHORT).show();
                     refreshLayout.setRefreshing(false);
                 } else {
                     // 获取最后一条消息之前的记录
                     List<EMMessage> messages = conversation.loadMoreMsgFromDB(null, Integer.MAX_VALUE);
+                    mMessages.clear();
                     mMessages.addAll(0, messages);
                     refreshLayout.setRefreshing(false);
                     messagesAdapter.notifyDataSetChanged();
-                    LogUtils.d("刷新后 聊天记录条数：" + messages.size());
                     LogUtils.d("刷新后 所有聊天记录条数：" + mMessages.size());
-                    isLoadAllRecord = true;
                 }
 
             }
