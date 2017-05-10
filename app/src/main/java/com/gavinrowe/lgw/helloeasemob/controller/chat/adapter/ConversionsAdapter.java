@@ -1,7 +1,9 @@
 package com.gavinrowe.lgw.helloeasemob.controller.chat.adapter;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import com.gavinrowe.lgw.helloeasemob.R;
 import com.gavinrowe.lgw.helloeasemob.controller.chat.activity.ChatActivity;
 import com.gavinrowe.lgw.helloeasemob.utils.LogUtils;
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMTextMessageBody;
 
@@ -35,6 +38,8 @@ public class ConversionsAdapter extends RecyclerView.Adapter<ConversionsAdapter.
     private List<EMConversation> conversations;
     private List<String> targets;
     private Activity activity;
+    // 标志，是否删除会话的同时删除聊天记录
+    private boolean isDeleteMsgRecord;
 
     public ConversionsAdapter(Activity activity, List<String> targets, List<EMConversation> conversations) {
         this.activity = activity;
@@ -48,7 +53,7 @@ public class ConversionsAdapter extends RecyclerView.Adapter<ConversionsAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ConversionsViewHolder holder, int position) {
+    public void onBindViewHolder(ConversionsViewHolder holder, final int position) {
         // 会话目标
         final String target = targets.get(position);
         EMConversation conversion = conversations.get(position);
@@ -58,8 +63,6 @@ public class ConversionsAdapter extends RecyclerView.Adapter<ConversionsAdapter.
         LogUtils.d("会话 最后一条消息：" + lastMsg);
         // 最后一条消息时间
         String lastMsgTime = new SimpleDateFormat("a hh:mm", Locale.getDefault()).format(new Date(conversion.getLastMessage().getMsgTime()));
-        // 最后一条消息ID
-        String lastMsgId = conversion.getLastMessage().getMsgId();
         holder.tvName.setText(target);
         holder.tvLatestMsg.setText(lastMsg);
         holder.tvTime.setText(lastMsgTime);
@@ -67,10 +70,56 @@ public class ConversionsAdapter extends RecyclerView.Adapter<ConversionsAdapter.
             @Override
             public void onClick(View v) {
                 Intent it = new Intent(activity, ChatActivity.class);
-                it.putExtra("target",target);
+                it.putExtra("target", target);
                 activity.startActivity(it);
             }
         });
+        // 长按删除会话
+        holder.itemConversation.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String[] choices = {"不删除聊天记录", "删除聊天记录"};
+                new AlertDialog
+                        .Builder(activity)
+                        .setTitle("删除会话")
+                        .setSingleChoiceItems(choices, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        LogUtils.d("删除会话：不删除聊天记录");
+                                        isDeleteMsgRecord = false;
+                                        break;
+                                    case 1:
+                                        LogUtils.d("删除会话：删除聊天记录");
+                                        isDeleteMsgRecord = true;
+                                        break;
+                                }
+                            }
+                        })
+                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                LogUtils.d("确定删除会话");
+                                deleteConversation(target, position);
+                            }
+                        })
+                        .setNegativeButton("否", null)
+                        .create()
+                        .show();
+                return true;
+            }
+        });
+    }
+
+    // 删除会话
+    private void deleteConversation(String target, int position) {
+        LogUtils.d("删除会话的位置：" + position);
+        //删除和某个user会话，如果需要保留聊天记录，传false
+        EMClient.getInstance().chatManager().deleteConversation(target, isDeleteMsgRecord);
+        targets.remove(position);
+        conversations.remove(position);
+        notifyDataSetChanged();
     }
 
     @Override
