@@ -6,11 +6,19 @@
     android:orientation="vertical"
     tools:context="com.gavinrowe.lgw.helloeasemob.controller.chat.activity.ChatActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_messages"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_messages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     <include layout="@layout/layout_send_msg" />
 </LinearLayout>

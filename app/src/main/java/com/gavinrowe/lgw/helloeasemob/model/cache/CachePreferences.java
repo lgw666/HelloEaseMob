@@ -15,9 +15,7 @@ import com.hyphenate.chat.EMClient;
 
 public class CachePreferences {
     private static final String NAME = CachePreferences.class.getSimpleName();
-
     private static final String UN = "USER_NAME";
-
     private static SharedPreferences preferences;
     private static SharedPreferences.Editor editor;
 

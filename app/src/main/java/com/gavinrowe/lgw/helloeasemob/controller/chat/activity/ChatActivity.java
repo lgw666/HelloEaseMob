@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.gavinrowe.lgw.helloeasemob.R;
 import com.gavinrowe.lgw.helloeasemob.controller.chat.adapter.MessagesAdapter;
 import com.gavinrowe.lgw.helloeasemob.listener.MessageListener;
+import com.gavinrowe.lgw.helloeasemob.utils.LogUtils;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
@@ -32,9 +34,15 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView rvMessages;
     @BindView(R.id.et_content)
     EditText etContent;
+    @BindView(R.id.refresh_layout)
+    SwipeRefreshLayout refreshLayout;
 
     // 目标
     private String target;
+    // 会话对象
+    private EMConversation conversation;
+    // 标志，判断是否已经拉取了所有聊天记录，App完全退出之前有效
+    private static boolean isLoadAllRecord;
 
     private List<EMMessage> mMessages = new ArrayList<>();
     private MessagesAdapter messagesAdapter;
@@ -51,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +72,34 @@ public class ChatActivity extends AppCompatActivity {
     private void init() {
         Intent it = getIntent();
         target = it.getStringExtra("target");
+        conversation = EMClient.getInstance().chatManager().getConversation(target);
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         messagesAdapter = new MessagesAdapter(this, mMessages);
+        setRefreshLayout();
         setRecyclerView();
+    }
+
+    private void setRefreshLayout() {
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isLoadAllRecord) {
+                    Toast.makeText(ChatActivity.this, "没有更多数据了", Toast.LENGTH_SHORT).show();
+                    refreshLayout.setRefreshing(false);
+                } else {
+                    // 获取最后一条消息之前的记录
+                    List<EMMessage> messages = conversation.loadMoreMsgFromDB(null, Integer.MAX_VALUE);
+                    mMessages.addAll(0, messages);
+                    refreshLayout.setRefreshing(false);
+                    messagesAdapter.notifyDataSetChanged();
+                    LogUtils.d("刷新后 聊天记录条数：" + messages.size());
+                    LogUtils.d("刷新后 所有聊天记录条数：" + mMessages.size());
+                    isLoadAllRecord = true;
+                }
+
+            }
+
+        });
     }
 
     @Override
@@ -106,10 +140,10 @@ public class ChatActivity extends AppCompatActivity {
 
     private void getMessages() {
         mMessages.clear();
-        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(target);
         //获取此会话的所有消息
         List<EMMessage> messages = conversation.getAllMessages();
         mMessages.addAll(messages);
         messagesAdapter.notifyDataSetChanged();
+        LogUtils.d("所有聊天记录条数：" + mMessages.size());
     }
 }

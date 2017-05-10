@@ -58,7 +58,8 @@ public class ConversionsAdapter extends RecyclerView.Adapter<ConversionsAdapter.
         LogUtils.d("会话 最后一条消息：" + lastMsg);
         // 最后一条消息时间
         String lastMsgTime = new SimpleDateFormat("a hh:mm", Locale.getDefault()).format(new Date(conversion.getLastMessage().getMsgTime()));
-
+        // 最后一条消息ID
+        String lastMsgId = conversion.getLastMessage().getMsgId();
         holder.tvName.setText(target);
         holder.tvLatestMsg.setText(lastMsg);
         holder.tvTime.setText(lastMsgTime);
