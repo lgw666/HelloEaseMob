@@ -141,6 +141,10 @@ public class ChatActivity extends AppCompatActivity {
             if (conversation == null)
                 conversation = EMClient.getInstance().chatManager().getConversation(target);
             getMessages();
+
+            // 发送消息后自动滚动到最后一条
+            LogUtils.d("消息数量：" + mMessages.size());
+            rvMessages.smoothScrollToPosition(mMessages.size() - 1);
         }
 
     }
