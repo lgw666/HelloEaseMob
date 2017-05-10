@@ -10,6 +10,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -36,6 +38,8 @@ public class ChatActivity extends AppCompatActivity {
     EditText etContent;
     @BindView(R.id.refresh_layout)
     SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     // 目标
     private String target;
@@ -64,7 +68,6 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         init();
-        getMessages();
     }
 
     private void init() {
@@ -73,9 +76,12 @@ public class ChatActivity extends AppCompatActivity {
         conversation = EMClient.getInstance().chatManager().getConversation(target);
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         messagesAdapter = new MessagesAdapter(this, mMessages);
+        setToolbar();
         setRefreshLayout();
         setRecyclerView();
+        getMessages();
     }
+
 
     private void setRefreshLayout() {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -163,4 +169,19 @@ public class ChatActivity extends AppCompatActivity {
         }
 
     }
+
+    private void setToolbar() {
+        toolbar.setTitle(target);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home)
+            finish();
+        return super.onOptionsItemSelected(item);
+    }
+
 }

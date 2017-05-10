@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.gavinrowe.lgw.helloeasemob.R;
@@ -15,12 +16,15 @@ import com.hyphenate.chat.EMClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * 会话管理
  */
 public class MainActivity extends AppCompatActivity {
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     private Fragment mChatFragment, mSettingsFragment;
     private List<Fragment> mFragments = new ArrayList<>();
     private FragmentManager mFragmentManager;
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        setToolbar();
         // 注册一个监听连接状态的listener
         EMClient.getInstance().addConnectionListener(new ConnectionListener(this));
         loadManagers();
@@ -53,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
             mFragments.add(mSettingsFragment);
 
         }
+    }
+
+    private void setToolbar() {
+        setSupportActionBar(toolbar);
     }
 
     // 加载本地会话和群组

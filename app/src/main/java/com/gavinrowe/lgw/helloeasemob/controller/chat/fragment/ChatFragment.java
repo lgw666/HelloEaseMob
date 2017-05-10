@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,12 +82,20 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         ButterKnife.bind(this, view);
-        rvConversations.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvConversations.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        rvConversations.setAdapter(conversionsAdapter);
+        setToolbar();
+        setRecyclerView();
         return view;
     }
 
+    private void setToolbar() {
+
+    }
+
+    private void setRecyclerView() {
+        rvConversations.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvConversations.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        rvConversations.setAdapter(conversionsAdapter);
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -137,4 +146,5 @@ public class ChatFragment extends Fragment {
             etTarget.setText("");
         }
     }
+
 }
