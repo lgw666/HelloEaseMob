@@ -14,10 +14,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.gavinrowe.lgw.helloeasemob.R;
+import com.gavinrowe.lgw.helloeasemob.controller.chat.activity.ChatActivity;
 import com.gavinrowe.lgw.helloeasemob.controller.chat.adapter.ConversionsAdapter;
 import com.gavinrowe.lgw.helloeasemob.listener.MessageListener;
+import com.gavinrowe.lgw.helloeasemob.model.cache.CachePreferences;
 import com.gavinrowe.lgw.helloeasemob.utils.LogUtils;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
@@ -28,6 +32,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Author: Luo Guowen
@@ -39,6 +44,8 @@ import butterknife.ButterKnife;
 public class ChatFragment extends Fragment {
     @BindView(R.id.rv_conversations)
     RecyclerView rvConversations;
+    @BindView(R.id.et_target)
+    EditText etTarget;
     // 会话目标
     private List<String> targets = new ArrayList<>();
     private List<EMConversation> conversations = new ArrayList<>();
@@ -115,4 +122,19 @@ public class ChatFragment extends Fragment {
         EMClient.getInstance().chatManager().removeMessageListener(messageListener);
     }
 
+    // 发起会话点击事件
+    @OnClick(R.id.btn_create_conversation)
+    public void onViewClicked() {
+        String target = etTarget.getText().toString().toLowerCase();
+        if (target.isEmpty()) {
+            Toast.makeText(getActivity(), "请输入目标用户名！", Toast.LENGTH_SHORT).show();
+        } else if (target.equals(CachePreferences.getUserInfo().getUn())) {
+            Toast.makeText(getContext(), "不能向自己发起会话！", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent it = new Intent(getContext(), ChatActivity.class);
+            it.putExtra("target", target);
+            startActivity(new Intent(it));
+            etTarget.setText("");
+        }
+    }
 }

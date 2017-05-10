@@ -123,6 +123,7 @@ public class ChatActivity extends AppCompatActivity {
         rvMessages.setAdapter(messagesAdapter);
     }
 
+    // 发送按钮点击事件
     public void onSendClick(View view) {
         String content = etContent.getText().toString();
         if (content.isEmpty()) {
@@ -136,17 +137,24 @@ public class ChatActivity extends AppCompatActivity {
 //                message.setChatType(EMMessage.ChatType.GroupChat);
             //发送消息
             EMClient.getInstance().chatManager().sendMessage(message);
+            // 如果会话是新的就获取一次
+            if (conversation == null)
+                conversation = EMClient.getInstance().chatManager().getConversation(target);
             getMessages();
         }
 
     }
 
     private void getMessages() {
-        mMessages.clear();
-        //获取此会话的所有消息
-        List<EMMessage> messages = conversation.getAllMessages();
-        mMessages.addAll(messages);
-        messagesAdapter.notifyDataSetChanged();
-        LogUtils.d("所有聊天记录条数：" + mMessages.size());
+        // 如果会话是新的就没有会话对象，不获取消息
+        if (conversation != null) {
+            mMessages.clear();
+            //获取此会话的所有消息
+            List<EMMessage> messages = conversation.getAllMessages();
+            mMessages.addAll(messages);
+            messagesAdapter.notifyDataSetChanged();
+            LogUtils.d("所有聊天记录条数：" + mMessages.size());
+        }
+
     }
 }

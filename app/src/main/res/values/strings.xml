@@ -9,4 +9,6 @@
     <string name="chat">会话</string>
     <string name="settings">设置</string>
     <string name="send">发送</string>
+    <string name="target_username">目标用户名</string>
+    <string name="create_conversation">发起会话</string>
 </resources>

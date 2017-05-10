@@ -54,7 +54,7 @@
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/selector_sign_up_pressed"
+        android:background="@drawable/selector_btn_sign_up"
         android:onClick="onSignUpClick"
         android:text="@string/sign_up"
         app:layout_constraintLeft_toLeftOf="@+id/et_pw"
