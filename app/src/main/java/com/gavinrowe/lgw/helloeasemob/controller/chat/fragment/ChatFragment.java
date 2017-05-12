@@ -88,13 +88,8 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         ButterKnife.bind(this, view);
-        setToolbar();
         setRecyclerView();
         return view;
-    }
-
-    private void setToolbar() {
-
     }
 
     private void setRecyclerView() {
