@@ -13,7 +13,6 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="用户名"
         android:textSize="16sp" />
 
     <TextView
@@ -21,8 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/tv_name"
-        android:text="时间" />
+        android:layout_alignTop="@id/tv_name" />
 
     <TextView
         android:id="@+id/tv_latest_msg"
@@ -33,6 +31,6 @@
         android:layout_marginTop="6dp"
         android:layout_toStartOf="@id/tv_time"
         android:ellipsize="end"
-        android:lines="1"
-        android:text="最近消息" />
+        android:lines="1" />
+
 </RelativeLayout>

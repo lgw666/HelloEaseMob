@@ -31,6 +31,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ChatActivity extends AppCompatActivity {
+    public static int CHAT = 0, GROUP_CHAT = 1, CHAT_ROOM = 2;
+
 
     @BindView(R.id.rv_messages)
     RecyclerView rvMessages;
@@ -40,6 +42,9 @@ public class ChatActivity extends AppCompatActivity {
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    // 会话类型, 默认单聊
+    private int chatType;
 
     // 目标
     private String target;
@@ -61,7 +66,6 @@ public class ChatActivity extends AppCompatActivity {
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +77,8 @@ public class ChatActivity extends AppCompatActivity {
     private void init() {
         Intent it = getIntent();
         target = it.getStringExtra("target");
+        LogUtils.d("聊天target：" + target);
+        chatType = it.getIntExtra("chatType", CHAT);
         conversation = EMClient.getInstance().chatManager().getConversation(target);
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         messagesAdapter = new MessagesAdapter(this, mMessages);
@@ -140,14 +146,22 @@ public class ChatActivity extends AppCompatActivity {
             //创建一条文本消息，content为消息文字内容，toChatUsername为对方用户或者群聊的id，后文皆是如此
             EMMessage message = EMMessage.createTxtSendMessage(content, target);
             etContent.setText("");
-//            //如果是群聊，设置chat type，默认是单聊
-//            if (chatType == CHATTYPE_GROUP)
-//                message.setChatType(EMMessage.ChatType.GroupChat);
+
+            //判断聊天类型，设置chat type
+            if (chatType == GROUP_CHAT) {
+                LogUtils.d("消息类型：群聊");
+                message.setChatType(EMMessage.ChatType.GroupChat);
+            } else if (chatType == CHAT_ROOM) {
+                LogUtils.d("消息类型：聊天室");
+                message.setChatType(EMMessage.ChatType.ChatRoom);
+            }
+
             //发送消息
             EMClient.getInstance().chatManager().sendMessage(message);
             // 如果会话是新的就获取一次
             if (conversation == null)
                 conversation = EMClient.getInstance().chatManager().getConversation(target);
+
             getMessages();
 
             // 发送消息后自动滚动到最后一条
@@ -166,12 +180,18 @@ public class ChatActivity extends AppCompatActivity {
             mMessages.addAll(messages);
             messagesAdapter.notifyDataSetChanged();
             LogUtils.d("所有聊天记录条数：" + mMessages.size());
+            // 收到消息后自动滚动到最后一条
+            rvMessages.smoothScrollToPosition(mMessages.size() - 1);
         }
 
     }
 
     private void setToolbar() {
-        toolbar.setTitle(target);
+        if (chatType == GROUP_CHAT) {
+            toolbar.setTitle(getIntent().getStringExtra("groupName"));
+        } else {
+            toolbar.setTitle(target);
+        }
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

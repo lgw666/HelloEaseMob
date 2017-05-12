@@ -1,16 +1,22 @@
 package com.gavinrowe.lgw.helloeasemob.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.gavinrowe.lgw.helloeasemob.R;
 import com.gavinrowe.lgw.helloeasemob.controller.chat.fragment.ChatFragment;
+import com.gavinrowe.lgw.helloeasemob.controller.chat.group.activity.GroupActivity;
 import com.gavinrowe.lgw.helloeasemob.controller.settings.fragment.SettingsFragment;
 import com.gavinrowe.lgw.helloeasemob.listener.ConnectionListener;
+import com.gavinrowe.lgw.helloeasemob.utils.LogUtils;
 import com.hyphenate.chat.EMClient;
 
 import java.util.ArrayList;
@@ -45,16 +51,22 @@ public class MainActivity extends AppCompatActivity {
 
         // 防止崩溃或者被系统回收后重启时点击崩溃
         if (savedInstanceState == null) {
+            LogUtils.d("保存的信息为null");
             initFragments();
         } else {
+            LogUtils.d("保存的信息不为null");
+            LogUtils.d("保存的Fragments数量：" + mFragments.size());
+
             mChatFragment = mFragmentManager.findFragmentByTag(ChatFragment.class.getName());
-            if (isNull(mChatFragment))
+            if (isNull(mChatFragment)) {
                 mChatFragment = new ChatFragment();
+            }
             mFragments.add(mChatFragment);
 
             mSettingsFragment = mFragmentManager.findFragmentByTag(ChatFragment.class.getName());
-            if (isNull(mSettingsFragment))
+            if (isNull(mSettingsFragment)) {
                 mSettingsFragment = new SettingsFragment();
+            }
             mFragments.add(mSettingsFragment);
 
         }
@@ -111,6 +123,25 @@ public class MainActivity extends AppCompatActivity {
     // 判断Fragment是否未空
     private boolean isNull(Fragment f) {
         return f == null;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_group:
+                startActivity(new Intent(this, GroupActivity.class));
+                break;
+            case R.id.menu_chat_room:
+                Toast.makeText(this, "聊天室", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -13,6 +13,15 @@
         android:background="@color/gray_light"
         android:padding="4dp" />
 
+    <!--目标名字，群聊时显示-->
+    <TextView
+        android:id="@+id/tv_target"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/tv_msg"
         android:layout_width="wrap_content"

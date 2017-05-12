@@ -1,6 +1,7 @@
 package com.gavinrowe.lgw.helloeasemob.listener;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -25,11 +26,9 @@ public class MessageListener implements EMMessageListener {
     private static final Intent INTENT_GET_MSG = new Intent(EM_ACTION_GET_MSG);
 
     private LocalBroadcastManager localBroadcastManager;
-    private Activity activity;
 
-    public MessageListener(Activity activity) {
-        this.activity = activity;
-        localBroadcastManager = LocalBroadcastManager.getInstance(activity);
+    public MessageListener(Context context) {
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
     }
 
     @Override

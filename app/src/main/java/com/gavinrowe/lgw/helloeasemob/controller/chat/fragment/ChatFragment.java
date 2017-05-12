@@ -11,7 +11,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import android.widget.Toast;
 import com.gavinrowe.lgw.helloeasemob.R;
 import com.gavinrowe.lgw.helloeasemob.controller.chat.activity.ChatActivity;
 import com.gavinrowe.lgw.helloeasemob.controller.chat.adapter.ConversionsAdapter;
+import com.gavinrowe.lgw.helloeasemob.listener.GroupListener;
 import com.gavinrowe.lgw.helloeasemob.listener.MessageListener;
 import com.gavinrowe.lgw.helloeasemob.model.cache.CachePreferences;
 import com.gavinrowe.lgw.helloeasemob.utils.LogUtils;
@@ -54,6 +54,8 @@ public class ChatFragment extends Fragment {
     private ConversionsAdapter conversionsAdapter;
     // 消息监听器
     private MessageListener messageListener;
+    // 群组监听
+    private GroupListener groupListener;
 
     private LocalBroadcastManager localBroadcastManager;
 
@@ -71,9 +73,13 @@ public class ChatFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
-        messageListener = new MessageListener(getActivity());
+        messageListener = new MessageListener(getContext());
+        groupListener = new GroupListener(getContext());
         // 设置消息监听
         EMClient.getInstance().chatManager().addMessageListener(messageListener);
+        // 设置群组监听
+        EMClient.getInstance().groupManager().addGroupChangeListener(groupListener);
+
         conversionsAdapter = new ConversionsAdapter(getActivity(), targets, conversations);
     }
 
@@ -96,6 +102,7 @@ public class ChatFragment extends Fragment {
         rvConversations.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         rvConversations.setAdapter(conversionsAdapter);
     }
+
     @Override
     public void onResume() {
         super.onResume();

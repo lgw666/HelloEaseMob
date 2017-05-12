@@ -76,6 +76,10 @@
         <activity
             android:name=".controller.chat.activity.ChatActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".controller.chat.group.activity.GroupActivity" />
+        <activity android:name=".controller.chat.group.activity.CreateGroupActivity" />
+        <activity android:name=".controller.chat.group.activity.PublicGroupsActivity" />
+        <activity android:name=".controller.chat.group.activity.JoinGroupActivity"></activity>
     </application>
 
 </manifest>

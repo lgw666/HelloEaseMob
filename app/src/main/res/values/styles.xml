@@ -21,6 +21,19 @@
         <item name="android:gravity">center</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
-        <item name="android:textColor">@color/selector_text</item>
+        <item name="android:textColor">@color/selector_text_checked</item>
     </style>
+
+
+    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!-- 设置-弹窗的背景-颜色-->
+        <item name="android:colorBackground">@color/gray</item>
+        <!-- 字体大小-->
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="OverflowMenuStyle" parent="@style/ThemeOverlay.AppCompat">
+        <!-- 是否覆盖overflow按钮，默认为true，即盖住Toolbar -->
+        <item name="overlapAnchor">false</item>
+    </style>
+
 </resources>

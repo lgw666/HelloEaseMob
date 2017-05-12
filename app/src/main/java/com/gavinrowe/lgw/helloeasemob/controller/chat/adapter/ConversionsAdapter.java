@@ -16,6 +16,7 @@ import com.gavinrowe.lgw.helloeasemob.controller.chat.activity.ChatActivity;
 import com.gavinrowe.lgw.helloeasemob.utils.LogUtils;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMTextMessageBody;
 
 import java.text.SimpleDateFormat;
@@ -57,13 +58,23 @@ public class ConversionsAdapter extends RecyclerView.Adapter<ConversionsAdapter.
         // 会话目标
         final String target = targets.get(position);
         EMConversation conversion = conversations.get(position);
+
         // 将最后一条消息显示出来
         EMTextMessageBody body = (EMTextMessageBody) conversion.getLastMessage().getBody();
         String lastMsg = body.getMessage();
         LogUtils.d("会话 最后一条消息：" + lastMsg);
         // 最后一条消息时间
         String lastMsgTime = new SimpleDateFormat("a hh:mm", Locale.getDefault()).format(new Date(conversion.getLastMessage().getMsgTime()));
-        holder.tvName.setText(target);
+        // 判断会话类型
+        final EMConversation.EMConversationType conversationType = conversion.getType();
+        if (conversationType == EMConversation.EMConversationType.GroupChat) {
+            //根据群组ID从本地获取群组基本信息
+            EMGroup group = EMClient.getInstance().groupManager().getGroup(target);
+            holder.tvName.setText(group.getGroupName());
+        } else {
+            holder.tvName.setText(target);
+        }
+
         holder.tvLatestMsg.setText(lastMsg);
         holder.tvTime.setText(lastMsgTime);
         holder.itemConversation.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +82,11 @@ public class ConversionsAdapter extends RecyclerView.Adapter<ConversionsAdapter.
             public void onClick(View v) {
                 Intent it = new Intent(activity, ChatActivity.class);
                 it.putExtra("target", target);
+                if (conversationType == EMConversation.EMConversationType.GroupChat) {
+                    EMGroup group = EMClient.getInstance().groupManager().getGroup(target);
+                    it.putExtra("chatType", ChatActivity.GROUP_CHAT);
+                    it.putExtra("groupName", group.getGroupName());
+                }
                 activity.startActivity(it);
             }
         });

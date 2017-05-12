@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.gavinrowe.lgw.helloeasemob.controller.chat.group.activity.CreateGroupActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <EditText
+        android:id="@+id/et_group_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/group_name"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/et_group_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/group_desc"
+        android:inputType="textMultiLine"
+        android:maxHeight="180dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <!--公开-->
+        <CheckBox
+            android:id="@+id/cb_gp_public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gp_public" />
+
+        <!--开放成员邀请-->
+        <CheckBox
+            android:id="@+id/cb_gp_member_invitation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gp_member_invitation" />
+
+        <!--加入需要群主同意-->
+        <CheckBox
+            android:id="@+id/cb_gp_owner_agreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gp_owner_agreement"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_btn_create"
+        android:onClick="onCreateClick"
+        android:text="@string/create"
+        android:textColor="@color/selector_text_pressed" />
+
+</LinearLayout>

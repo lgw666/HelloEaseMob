@@ -4,16 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.gavinrowe.lgw.helloeasemob.controller.MainActivity">
+    tools:context="com.gavinrowe.lgw.helloeasemob.controller.chat.group.activity.PublicGroupsActivity">
 
     <include layout="@layout/toolbar" />
 
-    <FrameLayout
-        android:id="@+id/layout_fragments"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_public_groups"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:overScrollMode="never" />
 
-    <include layout="@layout/tabs_bottom_main" />
-
+    <include layout="@layout/layout_load_more" />
 </LinearLayout>

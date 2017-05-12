@@ -1,6 +1,7 @@
 package com.gavinrowe.lgw.helloeasemob.controller.chat.adapter;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         return new MessageViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_msg_self, parent, false));
     }
 
+    @SuppressWarnings("all")
     @Override
     public void onBindViewHolder(MessageViewHolder holder, int position) {
         EMMessage message = messages.get(position);
@@ -58,6 +60,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         String time = new SimpleDateFormat("a hh:mm", Locale.getDefault()).format(new Date(message.getMsgTime()));
         LogUtils.d("消息来源：" + from);
         String msg = body.getMessage();
+        // 判断聊天类型
+        EMMessage.ChatType chatType = message.getChatType();
+        if (chatType == EMMessage.ChatType.GroupChat && TARGET == getItemViewType(position)) {
+            holder.tvTarget.setVisibility(View.VISIBLE);
+            holder.tvTarget.setText(from);
+        }
         holder.tvMsg.setText(msg);
         holder.tvTime.setText(time);
     }
@@ -77,12 +85,18 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     static class MessageViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_time)
         TextView tvTime;
+
         @BindView(R.id.tv_msg)
         TextView tvMsg;
+
+        @Nullable
+        @BindView(R.id.tv_target)
+        TextView tvTarget;
 
         MessageViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
+
 }
